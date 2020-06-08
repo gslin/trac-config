@@ -1,0 +1,33 @@
+input[type=button]:active, input[type=submit]:active,
+input[type=reset]:active {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+pre {
+    white-space: pre-wrap;
+}
+table.listing.tickets td.due_date, table.listing.tickets td.reporter {
+    white-space: nowrap;
+}
+table.tickets tr.duedate_overdue {
+    font-weight: bold;
+}
+table.tickets tr.duedate_today {
+    border: 2px solid;
+}
+table.subtickets tr td:last-of-type {
+    width: 15em;
+}
+table.subtickets tr.ticket_closed, .closed.ticket {
+    opacity: 0.5;
+}
+textarea {
+    font-family: monospace;
+}
+#content.ticket {
+    width: 78em;
+}
+#main img {
+    max-width: 100%;
+}
