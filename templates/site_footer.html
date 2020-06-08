@@ -1,0 +1,146 @@
+<script>
+<!--
+'use strict';
+
+// Run immediately.
+(function($) {
+    // Due date css handling
+    let d = new Date();
+    let today = (new Date(d.getTime() - d.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
+    document.querySelectorAll('table.tickets td.due_date').forEach(function(el) {
+        let due = el.innerText.trim();
+        if (due < today) {
+            el.parentElement.classList.add('duedate_overdue');
+        } else if (due === today) {
+            el.parentElement.classList.add('duedate_today');
+        }
+    });
+
+    // Due date (newticket) set to 00:00:00 (in UTC)
+    if ($('form[action$="/newticket#ticket"]').length > 0) {
+        do {
+            if ($('#ticket:visible').hasClass('ticketdraft')) {
+                break;
+            }
+
+            let el = $('#field-due_date');
+            let t = el.val();
+
+            if ('Z' === t.slice(-1)) {
+                t = new Date(Date.parse(t) + 86400000);
+                t = strftime('%Y-%m-%dT00:00:00Z', t);
+                el.val(t);
+                break;
+            }
+
+            let a = t.match(/\+(\d\d:\d\d)$/);
+            if (null !== a) {
+                let tz = a[1];
+                let new_str = 'T' + tz + ':00+' + tz;
+                t = new Date(Date.parse(t) + 86400000);
+                t = strftime('%Y-%m-%d' + new_str, t);
+                el.val(t);
+                break;
+            }
+        } while (false);
+    }
+
+    // Due date postpone button
+    let el = $('<button>Postpone (month)</button>');
+    el.click(function(){
+        let el = $('#field-due_date');
+        let t = el.val();
+
+        do {
+            if ('Z' === t.slice(-1)) {
+                t = new Date(Date.now());
+                t.setDate(1);
+                t.setMonth(t.getMonth() + 2);
+                t.setDate(0);
+                t = strftime('%Y-%m-%dT00:00:00Z', t);
+                el.val(t);
+                break;
+            }
+
+            let a = t.match(/\+(\d\d:\d\d)$/);
+            if (null !== a) {
+                let tz = a[1];
+                let new_str = 'T' + tz + ':00+' + tz;
+                t = new Date(Date.now());
+                t.setDate(1);
+                t.setMonth(t.getMonth() + 2);
+                t.setDate(0);
+                t = strftime('%Y-%m-%d' + new_str, t);
+                el.val(t);
+                break;
+            }
+        } while (false);
+
+        $('#propertyform input[name="submit"]').click();
+    });
+    $('td[headers="h_due_date"]').append(el);
+
+    // Accept & start buttons
+    $('#action_accept, #action_start').each(function(){
+        var v = $(this).val();
+
+        var that = this;
+        var b = $('<button/>').click(function(e){
+            var v = $(this).val();
+            $(that).click();
+            $('#propertyform input[name="submit"]').click();
+            e.preventDefault();
+        });
+        b.prop('value', v).text(v);
+
+        $(this).closest('div').append(b);
+    });
+
+    // Resolve with Buttons
+    $('#action_resolve_resolve_resolution option').each(function(){
+        var v = $(this).val();
+
+        var b = $('<button/>').click(function(e){
+            var v = $(this).val();
+            $('#action_resolve').click();
+            $('#action_resolve_resolve_resolution').prop('disabled', false);
+            $('#action_resolve_resolve_resolution').find('option[value="' + v + '"]').prop('selected', 'selected');
+            $('#propertyform input[name="submit"]').click();
+            e.preventDefault();
+        });
+        b.prop('value', v).text(v);
+
+        $(this).closest('div').append(b);
+    });
+
+    // Closed tickets handling
+    $('tr:has(a.closed)').addClass('ticket_closed');
+
+    // Run after content loaded.
+    $(function() {
+        // Layout
+        $('#attachments').removeClass('collapsed');
+        $('#modify').parent().removeClass('collapsed');
+
+        // Datepicker
+        if ($.datepicker) {
+            $.datepicker.setDefaults({
+                firstDay: 0,
+                selectOtherMonths: true,
+                showAnim: '',
+                showOtherMonths: true
+            });
+        }
+
+        // Add accesskey
+        $('button').each(function() {
+            var el = $(this);
+
+            var a = el.text()[0].toLowerCase();
+            el.attr('accesskey', a);
+        });
+    });
+})(jQuery);
+
+//-->
+</script>
