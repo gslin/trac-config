@@ -116,6 +116,31 @@
     // Closed tickets handling
     $('tr:has(a.closed)').addClass('ticket_closed');
 
+    // Subtickets toggle link
+    (() => {
+        function refreshToggleCSS() {
+            let t = Cookies.get('toggletickets');
+            if ('1' === t) {
+                document.getElementById('toggleticketscss').innerHTML = '.ticket_closed { display: none; }';
+            } else {
+                document.getElementById('toggleticketscss').innerHTML = '';
+            }
+        }
+
+        $('#ticket .description h3').append(' <span class="toggletickets">(<a href="javascript:;">toggle</a>)</span>');
+        $('.toggletickets').click(() => {
+            let t = Cookies.get('toggletickets');
+            if ('1' === t) {
+                Cookies.set('toggletickets', '0');
+            } else {
+                Cookies.set('toggletickets', '1');
+            }
+            refreshToggleCSS();
+        });
+
+        refreshToggleCSS();
+    })();
+
     // Run after content loaded.
     $(function() {
         // Layout
