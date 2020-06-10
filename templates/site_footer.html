@@ -127,7 +127,10 @@
             }
         }
 
-        $('#ticket .description h3').append(' <span class="toggletickets">(<a href="javascript:;">toggle</a>)</span>');
+        let closed_cnt = $('#ticket .description .subtickets tr.ticket_closed').length;
+        let total_cnt = $('#ticket .description .subtickets tr').length;
+
+        $('#ticket .description h3').append(' <span class="toggletickets">(<a href="javascript:;">toggle</a>, ' + closed_cnt + '/ ' + total_cnt + ')</span>');
         $('.toggletickets').click(() => {
             let t = Cookies.get('toggletickets');
             if ('1' === t) {
