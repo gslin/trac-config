@@ -29,8 +29,8 @@ textarea {
     font-family: monospace;
 }
 #content.ticket {
-    word-break: break-word;
     width: 78em;
+    word-break: break-word;
 }
 #main img {
     max-width: 100%;
