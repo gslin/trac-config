@@ -29,6 +29,7 @@ textarea {
     font-family: monospace;
 }
 #content.ticket {
+    word-break: break-word;
     width: 78em;
 }
 #main img {
